@@ -5,656 +5,149 @@ import java.awt.*;
 
 public class LaundryGUI extends JFrame {
 
-    private JLabel customersLabel;
-    private JLabel servedLabel;
-    private JLabel washerUsageLabel;
-    private JLabel dryerUsageLabel;
+    private final LoadingCard[] washingCards = new LoadingCard[6];
+    private final LoadingCard[] dryerCards = new LoadingCard[4];
+    private final LoadingCard[] paymentCards = new LoadingCard[2];
 
-    private LoadingCard[] washingLabels =
-            new LoadingCard[6];
+    private final JLabel customersLabel = createStatisticCard("Arrived", "0 / 50");
+    private final JLabel servedLabel = createStatisticCard("Served", "0");
+    private final JLabel washerUsageLabel = createStatisticCard("Washers Busy", "0 / 6");
+    private final JLabel dryerUsageLabel = createStatisticCard("Dryers Busy", "0 / 4");
 
-    private LoadingCard[] dryerLabels =
-            new LoadingCard[4];
-
-    private LoadingCard[] paymentLabels =
-            new LoadingCard[2];
-
-    private JTextArea activityArea;
+    private final JTextArea activityArea = new JTextArea();
 
     private int customersArrived = 0;
     private int customersServed = 0;
-
     private int busyWashers = 0;
     private int busyDryers = 0;
 
     public LaundryGUI() {
-
         setTitle("Smart Laundry");
-
-        setSize(900, 760);
-
-        setDefaultCloseOperation(
-                JFrame.EXIT_ON_CLOSE
-        );
-
+        setSize(900, 620);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
         createGUI();
-
         setVisible(true);
     }
 
     private void createGUI() {
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBackground(new Color(245, 246, 248));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JPanel mainPanel =
-                new JPanel(
-                        new BorderLayout(
-                                10,
-                                10
-                        )
-                );
-
-        mainPanel.setBackground(
-                new Color(245, 246, 248)
-        );
-
-        mainPanel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        15,
-                        15,
-                        15,
-                        15
-                )
-        );
-
-        // =====================================
         // HEADER
-        // =====================================
-
-        JPanel headerPanel =
-                new JPanel(
-                        new BorderLayout()
-                );
-
+        JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setOpaque(false);
+        JLabel title = new JLabel("Smart Laundry");
+        title.setFont(new Font("Arial", Font.BOLD, 26));
+        JLabel status = new JLabel("● Simulation Running");
+        status.setFont(new Font("Arial", Font.PLAIN, 14));
+        status.setForeground(new Color(60, 150, 75));
+        headerPanel.add(title, BorderLayout.WEST);
+        headerPanel.add(status, BorderLayout.EAST);
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
 
-        JLabel title =
-                new JLabel(
-                        "Smart Laundry"
-                );
-
-        title.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        26
-                )
-        );
-
-        JLabel status =
-                new JLabel(
-                        "● Simulation Running"
-                );
-
-        status.setFont(
-                new Font(
-                        "Arial",
-                        Font.PLAIN,
-                        14
-                )
-        );
-
-        status.setForeground(
-                new Color(
-                        60,
-                        150,
-                        75
-                )
-        );
-
-        headerPanel.add(
-                title,
-                BorderLayout.WEST
-        );
-
-        headerPanel.add(
-                status,
-                BorderLayout.EAST
-        );
-
-        mainPanel.add(
-                headerPanel,
-                BorderLayout.NORTH
-        );
-
-        // =====================================
         // MAIN CONTENT
-        // =====================================
-
-        JPanel contentPanel =
-                new JPanel();
-
+        JPanel contentPanel = new JPanel();
         contentPanel.setOpaque(false);
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        addSection(contentPanel, "Washing Machines", createCards(washingCards, "Washer"));
+        addSection(contentPanel, "Dryers", createCards(dryerCards, "Dryer"));
+        addSection(contentPanel, "Payment Kiosks", createCards(paymentCards, "Kiosk"));
+        addSection(contentPanel, "Statistics",
+                customersLabel, servedLabel, washerUsageLabel, dryerUsageLabel);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
 
-        contentPanel.setLayout(
-                new BoxLayout(
-                        contentPanel,
-                        BoxLayout.Y_AXIS
-                )
-        );
-
-        // =====================================
-        // WASHERS
-        // =====================================
-
-        contentPanel.add(
-                createTitle(
-                        "Washing Machines"
-                )
-        );
-
-        JPanel washingPanel =
-                new JPanel(
-                        new GridLayout(
-                                1,
-                                6,
-                                8,
-                                8
-                        )
-                );
-
-        washingPanel.setOpaque(false);
-
-        for (int i = 0; i < 6; i++) {
-
-            washingLabels[i] =
-                    createEquipmentCard(
-                            "Washer " + (i + 1)
-                    );
-
-            washingPanel.add(
-                    washingLabels[i]
-            );
-        }
-
-        contentPanel.add(
-                washingPanel
-        );
-
-        contentPanel.add(
-                Box.createVerticalStrut(12)
-        );
-
-        // =====================================
-        // DRYERS
-        // =====================================
-
-        contentPanel.add(
-                createTitle(
-                        "Dryers"
-                )
-        );
-
-        JPanel dryerPanel =
-                new JPanel(
-                        new GridLayout(
-                                1,
-                                4,
-                                8,
-                                8
-                        )
-                );
-
-        dryerPanel.setOpaque(false);
-
-        for (int i = 0; i < 4; i++) {
-
-            dryerLabels[i] =
-                    createEquipmentCard(
-                            "Dryer " + (i + 1)
-                    );
-
-            dryerPanel.add(
-                    dryerLabels[i]
-            );
-        }
-
-        contentPanel.add(
-                dryerPanel
-        );
-
-        contentPanel.add(
-                Box.createVerticalStrut(12)
-        );
-
-        // =====================================
-        // PAYMENT
-        // =====================================
-
-        contentPanel.add(
-                createTitle(
-                        "Payment Kiosks"
-                )
-        );
-
-        JPanel paymentPanel =
-                new JPanel(
-                        new GridLayout(
-                                1,
-                                2,
-                                8,
-                                8
-                        )
-                );
-
-        paymentPanel.setOpaque(false);
-
-        for (int i = 0; i < 2; i++) {
-
-            paymentLabels[i] =
-                    createEquipmentCard(
-                            "Kiosk " + (i + 1)
-                    );
-
-            paymentPanel.add(
-                    paymentLabels[i]
-            );
-        }
-
-        contentPanel.add(
-                paymentPanel
-        );
-
-        contentPanel.add(
-                Box.createVerticalStrut(12)
-        );
-
-        // =====================================
-        // STATISTICS
-        // =====================================
-
-        contentPanel.add(
-                createTitle(
-                        "Statistics"
-                )
-        );
-
-        JPanel statisticsPanel =
-                new JPanel(
-                        new GridLayout(
-                                1,
-                                4,
-                                8,
-                                8
-                        )
-                );
-
-        statisticsPanel.setOpaque(false);
-
-        customersLabel =
-                createStatisticCard(
-                        "Arrived",
-                        "0 / 50"
-                );
-
-        servedLabel =
-                createStatisticCard(
-                        "Served",
-                        "0"
-                );
-
-        washerUsageLabel =
-                createStatisticCard(
-                        "Washers Busy",
-                        "0 / 6"
-                );
-
-        dryerUsageLabel =
-                createStatisticCard(
-                        "Dryers Busy",
-                        "0 / 4"
-                );
-
-        statisticsPanel.add(
-                customersLabel
-        );
-
-        statisticsPanel.add(
-                servedLabel
-        );
-
-        statisticsPanel.add(
-                washerUsageLabel
-        );
-
-        statisticsPanel.add(
-                dryerUsageLabel
-        );
-
-        contentPanel.add(
-                statisticsPanel
-        );
-
-        mainPanel.add(
-                contentPanel,
-                BorderLayout.CENTER
-        );
-
-        // =====================================
         // ACTIVITY LOG
-        // =====================================
-
-        JPanel activityPanel =
-                new JPanel(
-                        new BorderLayout()
-                );
-
+        JPanel activityPanel = new JPanel(new BorderLayout());
         activityPanel.setOpaque(false);
-
-        JLabel activityTitle =
-                new JLabel(
-                        "Live Activity"
-                );
-
-        activityTitle.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        14
-                )
-        );
-
-        activityArea =
-                new JTextArea();
-
+        activityPanel.add(createTitle("Live Activity"), BorderLayout.NORTH);
         activityArea.setEditable(false);
-
-        activityArea.setFont(
-                new Font(
-                        "Monospaced",
-                        Font.PLAIN,
-                        11
-                )
-        );
-
-        activityArea.setBackground(
-                Color.WHITE
-        );
-
-        JScrollPane scrollPane =
-                new JScrollPane(
-                        activityArea
-                );
-
-        scrollPane.setPreferredSize(
-                new Dimension(
-                        0,
-                        120
-                )
-        );
-
-        activityPanel.add(
-                activityTitle,
-                BorderLayout.NORTH
-        );
-
-        activityPanel.add(
-                scrollPane,
-                BorderLayout.CENTER
-        );
-
-        mainPanel.add(
-                activityPanel,
-                BorderLayout.SOUTH
-        );
+        activityArea.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        JScrollPane scrollPane = new JScrollPane(activityArea);
+        scrollPane.setPreferredSize(new Dimension(0, 120));
+        activityPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(activityPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
     }
 
-    // =========================================
-    // SECTION TITLE
-    // =========================================
+    private LoadingCard[] createCards(LoadingCard[] cards, String name) {
+        for (int i = 0; i < cards.length; i++) {
+            cards[i] = new LoadingCard(name + " " + (i + 1));
+        }
+        return cards;
+    }
 
-    private JLabel createTitle(
-            String text) {
+    private void addSection(JPanel parent, String title, JComponent... items) {
+        JPanel row = new JPanel(new GridLayout(1, items.length, 8, 8));
+        row.setOpaque(false);
+        for (JComponent item : items) row.add(item);
+        parent.add(createTitle(title));
+        parent.add(row);
+        parent.add(Box.createVerticalStrut(12));
+    }
 
-        JLabel label =
-                new JLabel(text);
-
-        label.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        14
-                )
-        );
-
-        label.setBorder(
-                BorderFactory.createEmptyBorder(
-                        2,
-                        0,
-                        5,
-                        0
-                )
-        );
-
+    private JLabel createTitle(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Arial", Font.BOLD, 14));
+        label.setBorder(BorderFactory.createEmptyBorder(2, 0, 5, 0));
         return label;
     }
 
-    // =========================================
-    // EQUIPMENT CARD
-    // =========================================
-
-    private LoadingCard createEquipmentCard(
-            String name) {
-
-        return new LoadingCard(name);
-    }
-
-    // =========================================
-    // STATISTIC CARD
-    // =========================================
-
-    private JLabel createStatisticCard(
-            String title,
-            String value) {
-
-        JLabel label =
-                new JLabel(
-                        "<html><center>"
-                                + title
-                                + "<br>"
-                                + "<b>"
-                                + value
-                                + "</b>"
-                                + "</center></html>",
-                        SwingConstants.CENTER
-                );
-
+    private JLabel createStatisticCard(String title, String value) {
+        JLabel label = new JLabel(statText(title, value), SwingConstants.CENTER);
         label.setOpaque(true);
-
-        label.setBackground(
-                Color.WHITE
-        );
-
-        label.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(
-                                220,
-                                220,
-                                220
-                        )
-                )
-        );
-
+        label.setBackground(Color.WHITE);
+        label.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
         return label;
     }
 
-    // =========================================
-    // CUSTOMER ARRIVED
-    // =========================================
+    private String statText(String title, Object value) {
+        return "<html><center>" + title + "<br><b>" + value + "</b></center></html>";
+    }
+
+    // Returns the new busy count after applying a status change.
+    private int updateBusy(int busy, String status) {
+        if (status.equalsIgnoreCase("BUSY")) return busy + 1;
+        if (status.equalsIgnoreCase("FREE") || status.equalsIgnoreCase("FAILED")) return Math.max(0, busy - 1);
+        return busy;
+    }
 
     public void customerArrived() {
-
-        SwingUtilities.invokeLater(() -> {
-
-            customersArrived++;
-
-            customersLabel.setText(
-                    "<html><center>"
-                            + "Arrived"
-                            + "<br><b>"
-                            + customersArrived
-                            + " / 50"
-                            + "</b></center></html>"
-            );
-        });
+        SwingUtilities.invokeLater(() ->
+                customersLabel.setText(statText("Arrived", ++customersArrived + " / 50")));
     }
-
-    // =========================================
-    // CUSTOMER SERVED
-    // =========================================
 
     public void customerServed() {
+        SwingUtilities.invokeLater(() ->
+                servedLabel.setText(statText("Served", ++customersServed)));
+    }
 
+    public void updateWashingMachine(int machineNumber, String status) {
         SwingUtilities.invokeLater(() -> {
-
-            customersServed++;
-
-            servedLabel.setText(
-                    "<html><center>"
-                            + "Served"
-                            + "<br><b>"
-                            + customersServed
-                            + "</b></center></html>"
-            );
+            washingCards[machineNumber - 1].setStatus(status);
+            busyWashers = updateBusy(busyWashers, status);
+            washerUsageLabel.setText(statText("Washers Busy", busyWashers + " / 6"));
         });
     }
 
-    // =========================================
-    // WASHING MACHINE
-    // =========================================
-
-    public void updateWashingMachine(
-            int machineNumber,
-            String status) {
-
+    public void updateDryer(int dryerNumber, String status) {
         SwingUtilities.invokeLater(() -> {
-
-            washingLabels[
-                    machineNumber - 1
-                    ].setStatus(status);
-
-            if (status.equalsIgnoreCase(
-                    "BUSY")) {
-
-                busyWashers++;
-
-            } else if (
-                    status.equalsIgnoreCase(
-                            "FREE")
-                            ||
-                            status.equalsIgnoreCase(
-                                    "FAILED")
-            ) {
-
-                busyWashers--;
-
-                if (busyWashers < 0) {
-                    busyWashers = 0;
-                }
-            }
-
-            washerUsageLabel.setText(
-                    "<html><center>"
-                            + "Washers Busy"
-                            + "<br><b>"
-                            + busyWashers
-                            + " / 6"
-                            + "</b></center></html>"
-            );
+            dryerCards[dryerNumber - 1].setStatus(status);
+            busyDryers = updateBusy(busyDryers, status);
+            dryerUsageLabel.setText(statText("Dryers Busy", busyDryers + " / 4"));
         });
     }
 
-    // =========================================
-    // DRYER
-    // =========================================
-
-    public void updateDryer(
-            int dryerNumber,
-            String status) {
-
-        SwingUtilities.invokeLater(() -> {
-
-            dryerLabels[
-                    dryerNumber - 1
-                    ].setStatus(status);
-
-            if (status.equalsIgnoreCase(
-                    "BUSY")) {
-
-                busyDryers++;
-
-            } else if (
-                    status.equalsIgnoreCase(
-                            "FREE")
-                            ||
-                            status.equalsIgnoreCase(
-                                    "FAILED")
-            ) {
-
-                busyDryers--;
-
-                if (busyDryers < 0) {
-                    busyDryers = 0;
-                }
-            }
-
-            dryerUsageLabel.setText(
-                    "<html><center>"
-                            + "Dryers Busy"
-                            + "<br><b>"
-                            + busyDryers
-                            + " / 4"
-                            + "</b></center></html>"
-            );
-        });
+    public void updatePayment(int paymentNumber, String status) {
+        SwingUtilities.invokeLater(() -> paymentCards[paymentNumber - 1].setStatus(status));
     }
 
-    // =========================================
-    // PAYMENT
-    // =========================================
-
-    public void updatePayment(
-            int paymentNumber,
-            String status) {
-
+    public void addActivity(String message) {
         SwingUtilities.invokeLater(() -> {
-
-            paymentLabels[
-                    paymentNumber - 1
-                    ].setStatus(status);
-        });
-    }
-
-    // =========================================
-    // ACTIVITY
-    // =========================================
-
-    public void addActivity(
-            String message) {
-
-        SwingUtilities.invokeLater(() -> {
-
-            activityArea.append(
-                    message + "\n"
-            );
-
-            activityArea.setCaretPosition(
-                    activityArea
-                            .getDocument()
-                            .getLength()
-            );
+            activityArea.append(message + "\n");
+            activityArea.setCaretPosition(activityArea.getDocument().getLength());
         });
     }
 }
