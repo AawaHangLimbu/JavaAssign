@@ -10,14 +10,14 @@ public class LaundryGUI extends JFrame {
     private JLabel washerUsageLabel;
     private JLabel dryerUsageLabel;
 
-    private JLabel[] washingLabels =
-            new JLabel[6];
+    private LoadingCard[] washingLabels =
+            new LoadingCard[6];
 
-    private JLabel[] dryerLabels =
-            new JLabel[4];
+    private LoadingCard[] dryerLabels =
+            new LoadingCard[4];
 
-    private JLabel[] paymentLabels =
-            new JLabel[2];
+    private LoadingCard[] paymentLabels =
+            new LoadingCard[2];
 
     private JTextArea activityArea;
 
@@ -31,7 +31,7 @@ public class LaundryGUI extends JFrame {
 
         setTitle("Smart Laundry");
 
-        setSize(900, 650);
+        setSize(900, 760);
 
         setDefaultCloseOperation(
                 JFrame.EXIT_ON_CLOSE
@@ -445,48 +445,10 @@ public class LaundryGUI extends JFrame {
     // EQUIPMENT CARD
     // =========================================
 
-    private JLabel createEquipmentCard(
+    private LoadingCard createEquipmentCard(
             String name) {
 
-        JLabel label =
-                new JLabel(
-                        "<html><center>"
-                                + "<b>"
-                                + name
-                                + "</b>"
-                                + "<br>FREE"
-                                + "</center></html>",
-                        SwingConstants.CENTER
-                );
-
-        label.setPreferredSize(
-                new Dimension(
-                        120,
-                        60
-                )
-        );
-
-        label.setOpaque(true);
-
-        label.setBackground(
-                new Color(
-                        232,
-                        234,
-                        237
-                )
-        );
-
-        label.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(
-                                210,
-                                212,
-                                215
-                        )
-                )
-        );
-
-        return label;
+        return new LoadingCard(name);
     }
 
     // =========================================
@@ -526,103 +488,6 @@ public class LaundryGUI extends JFrame {
         );
 
         return label;
-    }
-
-    // =========================================
-    // STATUS COLORS
-    // =========================================
-
-    private void setStatusColor(
-            JLabel label,
-            String status) {
-
-        if (status.equalsIgnoreCase(
-                "BUSY")) {
-
-            label.setBackground(
-                    new Color(
-                            190,
-                            230,
-                            195
-                    )
-            );
-
-            label.setBorder(
-                    BorderFactory.createLineBorder(
-                            new Color(
-                                    80,
-                                    170,
-                                    90
-                            ),
-                            2
-                    )
-            );
-
-        } else if (status.equalsIgnoreCase(
-                "FREE")) {
-
-            label.setBackground(
-                    new Color(
-                            232,
-                            234,
-                            237
-                    )
-            );
-
-            label.setBorder(
-                    BorderFactory.createLineBorder(
-                            new Color(
-                                    210,
-                                    212,
-                                    215
-                            )
-                            )
-                    );
-
-        } else if (status.equalsIgnoreCase(
-                "FAILED")) {
-
-            label.setBackground(
-                    new Color(
-                            245,
-                            190,
-                            190
-                    )
-            );
-
-            label.setBorder(
-                    BorderFactory.createLineBorder(
-                            new Color(
-                                    200,
-                                    70,
-                                    70
-                            ),
-                            2
-                    )
-            );
-
-        } else if (status.equalsIgnoreCase(
-                "WAITING")) {
-
-            label.setBackground(
-                    new Color(
-                            250,
-                            220,
-                            170
-                    )
-            );
-
-            label.setBorder(
-                    BorderFactory.createLineBorder(
-                            new Color(
-                                    220,
-                                    150,
-                                    50
-                            ),
-                            2
-                    )
-            );
-        }
     }
 
     // =========================================
@@ -676,25 +541,9 @@ public class LaundryGUI extends JFrame {
 
         SwingUtilities.invokeLater(() -> {
 
-            JLabel label =
-                    washingLabels[
-                            machineNumber - 1
-                            ];
-
-            label.setText(
-                    "<html><center>"
-                            + "<b>Washer "
-                            + machineNumber
-                            + "</b>"
-                            + "<br>"
-                            + status
-                            + "</center></html>"
-            );
-
-            setStatusColor(
-                    label,
-                    status
-            );
+            washingLabels[
+                    machineNumber - 1
+                    ].setStatus(status);
 
             if (status.equalsIgnoreCase(
                     "BUSY")) {
@@ -737,25 +586,9 @@ public class LaundryGUI extends JFrame {
 
         SwingUtilities.invokeLater(() -> {
 
-            JLabel label =
-                    dryerLabels[
-                            dryerNumber - 1
-                            ];
-
-            label.setText(
-                    "<html><center>"
-                            + "<b>Dryer "
-                            + dryerNumber
-                            + "</b>"
-                            + "<br>"
-                            + status
-                            + "</center></html>"
-            );
-
-            setStatusColor(
-                    label,
-                    status
-            );
+            dryerLabels[
+                    dryerNumber - 1
+                    ].setStatus(status);
 
             if (status.equalsIgnoreCase(
                     "BUSY")) {
@@ -798,25 +631,9 @@ public class LaundryGUI extends JFrame {
 
         SwingUtilities.invokeLater(() -> {
 
-            JLabel label =
-                    paymentLabels[
-                            paymentNumber - 1
-                            ];
-
-            label.setText(
-                    "<html><center>"
-                            + "<b>Kiosk "
-                            + paymentNumber
-                            + "</b>"
-                            + "<br>"
-                            + status
-                            + "</center></html>"
-            );
-
-            setStatusColor(
-                    label,
-                    status
-            );
+            paymentLabels[
+                    paymentNumber - 1
+                    ].setStatus(status);
         });
     }
 
